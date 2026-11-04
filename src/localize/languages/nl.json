@@ -29,5 +29,8 @@
   "settings_hide_image": "Afbeelding verbergen",
   "settings_hide_units": "Eenheden verbergen",
   "settings_full": "Volledig",
-  "settings_compact": "Compact"
+  "settings_compact": "Compact",
+  "badge_today": "vandaag",
+  "badge_days_ago": "{days} d geleden",
+  "badge_in_days": "over {days} d"
 }

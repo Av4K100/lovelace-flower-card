@@ -1,5 +1,6 @@
 import { fireEvent } from "custom-card-helpers";
 import { ExtraBadge } from "../types/flower-card-types";
+import { HassLanguageContext, localize } from "../localize/localize";
 import FlowerCard from "../flower-card";
 import { moreInfo } from "./utils";
 
@@ -16,20 +17,24 @@ export const daysSince = (value: unknown, now: Date = new Date()): number | null
     return Math.round((startOf(now) - startOf(date)) / 86400000);
 };
 
-/** Short relative label for a badge: 'today', '1 d ago', '6 d ago', 'in 3 d'. Null if not a date. */
-export const relativeDaysLabel = (value: unknown, now: Date = new Date()): string | null => {
+/** Short relative label for `format: relative`: 'today', '6 d ago', 'in 3 d'. Null if not a date. */
+export const relativeDaysLabel = (
+    value: unknown,
+    hass?: HassLanguageContext,
+    now: Date = new Date(),
+): string | null => {
     const days = daysSince(value, now);
     if (days === null) return null;
-    if (days === 0) return 'today';
-    if (days > 0) return `${days} d ago`;
-    return `in ${-days} d`;
+    if (days === 0) return localize(hass, 'badge_today');
+    const key = days > 0 ? 'badge_days_ago' : 'badge_in_days';
+    return localize(hass, key).replace('{days}', String(Math.abs(days)));
 };
 
 /**
  * Tap handler for an entity badge. With `tap_action` set, the action is handed to
  * Home Assistant's own action handler (the `hass-action` event), so every action
  * type the frontend supports works, including `perform-action` and `confirmation`.
- * Without it, the badge keeps the original behaviour and opens more-info.
+ * Without it, the badge keeps the existing behaviour and opens more-info.
  */
 export const handleBadgeTap = (card: FlowerCard, badge: ExtraBadge, entityId: string): void => {
     if (badge.tap_action) {

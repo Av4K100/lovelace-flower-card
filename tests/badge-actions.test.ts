@@ -27,15 +27,20 @@ describe('daysSince', () => {
 });
 
 describe('relativeDaysLabel', () => {
-  it('formats past, today and future', () => {
-    expect(relativeDaysLabel(new Date(2026, 10, 4, 8, 0), now)).toBe('today');
-    expect(relativeDaysLabel(new Date(2026, 10, 3, 8, 0), now)).toBe('1 d ago');
-    expect(relativeDaysLabel(new Date(2026, 9, 29, 8, 0), now)).toBe('6 d ago');
-    expect(relativeDaysLabel(new Date(2026, 10, 7, 8, 0), now)).toBe('in 3 d');
+  it('formats past, today and future in English by default', () => {
+    expect(relativeDaysLabel(new Date(2026, 10, 4, 8, 0), undefined, now)).toBe('today');
+    expect(relativeDaysLabel(new Date(2026, 10, 3, 8, 0), undefined, now)).toBe('1 d ago');
+    expect(relativeDaysLabel(new Date(2026, 9, 29, 8, 0), undefined, now)).toBe('6 d ago');
+    expect(relativeDaysLabel(new Date(2026, 10, 7, 8, 0), undefined, now)).toBe('in 3 d');
+  });
+
+  it('uses the Home Assistant language', () => {
+    expect(relativeDaysLabel(new Date(2026, 9, 29, 8, 0), { language: 'de' }, now)).toBe('vor 6 T.');
+    expect(relativeDaysLabel(new Date(2026, 9, 29, 8, 0), { language: 'nl' }, now)).toBe('6 d geleden');
   });
 
   it('returns null for non-dates so the normal state is shown', () => {
-    expect(relativeDaysLabel('unavailable', now)).toBeNull();
+    expect(relativeDaysLabel('unavailable', undefined, now)).toBeNull();
   });
 });
 

@@ -18,6 +18,7 @@ By default, only the icon is displayed. Hovering shows a tooltip with the entity
   - [📋 Attribute Badge](#-attribute-badge)
   - [🏷️ Static Icon/Text Badge](#️-static-icontext-badge)
   - [🔲 Action Button Badge](#-action-button-badge)
+  - [👆 Tap Action Badge](#-tap-action-badge)
   - [🌿 Care Info Badge](#-care-info-badge)
   - [🧩 Combined Example](#-combined-example)
 
@@ -35,6 +36,8 @@ By default, only the icon is displayed. Hovering shows a tooltip with the entity
 | `color_on` | string | Icon color when binary_sensor is "on" (default: primary color) |
 | `color_off` | string | Icon color when binary_sensor is "off" (default: disabled color) |
 | `show_state` | boolean | Show the entity's state value next to the icon (default: `false`) |
+| `format` | string | Set to `relative` to show a timestamp state or attribute as days: `today`, `6 d ago`, `in 3 d` |
+| `tap_action` | object | Action to run when the badge is tapped (any Home Assistant action, e.g. `perform-action` with `confirmation`). Default: open more-info |
 | `type` | string | Badge type discriminator. Set to `care_info` for the care popup badge. |
 | `fields` | string[] | (`care_info`) Care fields shown in the popup. Default: all care fields. |
 | `title` | string | (`care_info`) Dialog heading. Default: `Care`. |
@@ -177,7 +180,7 @@ extra_badges:
 
 **Step 3:** Create an automation for the button press.
 
-> **Note:** Clicking an entity badge opens its more-info dialog. For an `input_button`, press the button in that dialog to run the automation — badges don't fire entities directly.
+> **Note:** By default, clicking an entity badge opens its more-info dialog, so for an `input_button` you press the button in that dialog. To press it in one tap instead, give the badge a `tap_action` (see [Tap Action Badge](#-tap-action-badge)).
 
 Using the UI, go to **Settings → Automations & scenes → Automations → Create automation**, switch to YAML mode, and paste:
 
@@ -216,6 +219,30 @@ automation:
 ```
 
 This lets you control plant-related devices (pumps, grow lights, etc.) directly from the Flower Card.
+
+---
+
+## 👆 Tap Action Badge
+
+Give an entity badge a `tap_action` to run an action in one tap instead of opening more-info. Any Home Assistant action works, including `confirmation`. Combine it with `format: relative` to show how long ago something happened, e.g. a "last watered" sensor that logs a new watering when tapped:
+
+```yaml
+extra_badges:
+  - entity: sensor.monstera_last_watering
+    icon: mdi:watering-can
+    color: "#42A5F5"
+    show_state: true
+    format: relative
+    tap_action:
+      action: perform-action
+      perform_action: button.press
+      target:
+        entity_id: button.monstera_complete_watering
+      confirmation:
+        text: Log a watering for Monstera?
+```
+
+`format: relative` works for any timestamp state (or an attribute holding a timestamp, including `last_changed`). Values that aren't a date are shown unchanged.
 
 ---
 

@@ -304,7 +304,7 @@ export const renderExtraBadge = (card: FlowerCard, badge: ExtraBadge) => {
             : badge.attribute === 'last_updated' ? entity.last_updated
             : badge.attribute ? entity.attributes[badge.attribute]
             : state;
-        const rel = relativeDaysLabel(raw);
+        const rel = relativeDaysLabel(raw, card._hass);
         if (rel) displayValue = rel;
     }
 
