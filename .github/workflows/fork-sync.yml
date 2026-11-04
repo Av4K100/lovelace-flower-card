@@ -1,0 +1,41 @@
+---
+name: "Fork sync (daily from Olen)"
+
+# Once a day, pulls any new changes from Olen/lovelace-flower-card into this fork's main
+# (the same as pressing "Sync fork"), then runs "Fork build" so flower-card-av4k.js is rebuilt.
+# If a sync can't be done automatically (the original changed the same lines as this fork,
+# or changed one of its own workflow files), this job fails and GitHub emails you:
+# press "Sync fork" on the repo page instead, and ask Claude to sort out any clash.
+
+on:
+  schedule:
+    - cron: "23 4 * * *"   # 04:23 UTC every day
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: fork-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: github.repository != 'Olen/lovelace-flower-card'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge upstream main
+        id: merge
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          result=$(gh api -X POST "repos/${GITHUB_REPOSITORY}/merge-upstream" -f branch=main)
+          echo "$result"
+          echo "type=$(echo "$result" | jq -r '.merge_type')" >> "$GITHUB_OUTPUT"
+
+      - name: Rebuild the fork bundle
+        if: steps.merge.outputs.type != 'none'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run fork-build.yml --ref main -R "${GITHUB_REPOSITORY}"
