@@ -3,6 +3,7 @@ import { TemplateResult, html } from "lit";
 import { careFields, careIcons, default_show_bars, getCareFields } from "./constants";
 import { getHassLanguage, localize, localizeReading } from "../localize/localize";
 import { entityDisplayName, moreInfo } from "./utils";
+import { handleBadgeTap, relativeDaysLabel } from "./badge-actions";
 import FlowerCard from "../flower-card";
 
 export interface CareEntry {
@@ -297,11 +298,21 @@ export const renderExtraBadge = (card: FlowerCard, badge: ExtraBadge) => {
         displayValue = isBinarySensor ? state : card._hass.formatEntityState(entity);
     }
 
+    // format: relative shows a timestamp as days, e.g. "6 d ago"
+    if (badge.format === 'relative') {
+        const raw = badge.attribute === 'last_changed' ? entity.last_changed
+            : badge.attribute === 'last_updated' ? entity.last_updated
+            : badge.attribute ? entity.attributes[badge.attribute]
+            : state;
+        const rel = relativeDaysLabel(raw, card._hass);
+        if (rel) displayValue = rel;
+    }
+
     // Build tooltip text
     const tooltipText = `${tooltipLabel}: ${displayValue}`;
 
     return html`
-        <div class="extra-badge tooltip" @click="${(e: Event) => { e.stopPropagation(); moreInfo(card, badgeEntity)}}">
+        <div class="extra-badge tooltip" @click="${(e: Event) => { e.stopPropagation(); handleBadgeTap(card, badge, badgeEntity)}}">
             <div class="tip" style="text-align:center;">${tooltipText}</div>
             <ha-icon .icon="${icon}" style="color: ${color}"></ha-icon>
             ${badge.show_state ? html`<span class="badge-text">${displayValue}</span>` : ''}

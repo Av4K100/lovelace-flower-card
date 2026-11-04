@@ -29,5 +29,8 @@
   "settings_hide_image": "Bild ausblenden",
   "settings_hide_units": "Einheiten ausblenden",
   "settings_full": "Voll",
-  "settings_compact": "Kompakt"
+  "settings_compact": "Kompakt",
+  "badge_today": "heute",
+  "badge_days_ago": "vor {days} T.",
+  "badge_in_days": "in {days} T."
 }
