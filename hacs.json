@@ -1,6 +1,6 @@
 {
-    "name": "Flower Card",
+    "name": "Flower Card (Av4K100 fork)",
     "render_readme": true,
-    "filename": "flower-card.js",
+    "filename": "flower-card-av4k.js",
     "homeassistant": "2022.8.0"
 }

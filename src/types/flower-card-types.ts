@@ -13,6 +13,8 @@ export interface ExtraBadge {
     color_off?: string;   // Color when binary_sensor is "off" (default: grey)
     text?: string;        // Static text to display (alternative to entity)
     show_state?: boolean; // Show state value next to icon (default: false)
+    format?: 'relative';  // Show a timestamp state/attribute as days, e.g. "6 d ago"
+    tap_action?: Record<string, unknown>; // Action on tap (any HA action, e.g. perform-action); default: more-info
 }
 
 /** One part of a name, composed by Home Assistant (HA 2025.11+). */
