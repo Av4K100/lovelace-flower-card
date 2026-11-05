@@ -414,7 +414,7 @@ ha-card > .header > #name {
             <ha-icon .icon="${c}" style="color: ${d}"></ha-icon>
         </div>
     `})(this)}</span>
-                <span id="name"> ${s} <ha-icon .icon="mdi:${"problem"==i.state.toLowerCase()?"alert-circle-outline":""}"></ha-icon>
+                <span id="name"> ${s}${"problem"==i.state.toLowerCase()?F` <ha-icon .icon="mdi:alert-circle-outline"></ha-icon>`:""}
                 </span>
                 ${n?"":F`<span id="species">${a}</span>`}
             </div>
