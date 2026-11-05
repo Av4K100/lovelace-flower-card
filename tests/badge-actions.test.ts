@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { daysSince, relativeDaysLabel, handleBadgeTap } from '../src/utils/badge-actions';
+import { daysSince, relativeDaysLabel, nextDueLabel, handleBadgeTap } from '../src/utils/badge-actions';
 import FlowerCard from '../src/flower-card';
 
 const now = new Date(2026, 10, 4, 21, 0); // 4 Nov 2026, 21:00 local
@@ -41,6 +41,18 @@ describe('relativeDaysLabel', () => {
 
   it('returns null for non-dates so the normal state is shown', () => {
     expect(relativeDaysLabel('unavailable', undefined, now)).toBeNull();
+  });
+});
+
+describe('nextDueLabel', () => {
+  it('labels upcoming, today and overdue dates', () => {
+    expect(nextDueLabel('2026-11-07', undefined, now)).toEqual({ text: 'next in 3 d', state: 'upcoming' });
+    expect(nextDueLabel('2026-11-04', undefined, now)).toEqual({ text: 'due today', state: 'today' });
+    expect(nextDueLabel('2026-11-02', undefined, now)).toEqual({ text: '2 d late', state: 'late' });
+  });
+
+  it('returns null for non-dates', () => {
+    expect(nextDueLabel('unknown', undefined, now)).toBeNull();
   });
 });
 

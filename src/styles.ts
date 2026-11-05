@@ -198,6 +198,26 @@ export const style = css`
 .extra-badge.tooltip .tip {
   top: 2em;
 }
+.extra-badge.two-line {
+  white-space: nowrap;
+}
+.extra-badge.two-line .badge-text {
+  display: inline-flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+.extra-badge .badge-next {
+  font-size: 0.8em;
+  opacity: 0.7;
+}
+.extra-badge .badge-next.today {
+  color: #FFA726;
+  opacity: 1;
+}
+.extra-badge .badge-next.late {
+  color: #EF5350;
+  opacity: 1;
+}
 .tooltip:hover .tip, .tooltip:active .tip {
   display: block;
   opacity: 1;
