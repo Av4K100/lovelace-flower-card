@@ -22,6 +22,7 @@
   "settings_entity": "Entity",
   "settings_display_name": "Display Name",
   "settings_display_type": "Display Type",
+  "settings_image_entity": "Picture from entity (e.g. Planta image)",
   "settings_battery_sensor": "Battery Sensor",
   "settings_show_bars": "Show Bars",
   "settings_show_care_info": "Show Care Info",

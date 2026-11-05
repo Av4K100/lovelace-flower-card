@@ -28,6 +28,7 @@ export type CardName = string | EntityNameItem | EntityNameItem[];
 export interface FlowerCardConfig extends LovelaceCardConfig {
     entity?: string;
     battery_sensor?: string;
+    image_entity?: string;     // Fork: take the picture from this entity (e.g. a Planta image.*), live
     display_type?: DisplayType;
     hide_units?: boolean;      // Hide value/unit next to bars (default: false for full, true for compact)
     bars_per_row?: number;     // Number of bars per row: 1 or 2 (default: 2 for full, 1 for compact)

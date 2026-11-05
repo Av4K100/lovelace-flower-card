@@ -75,7 +75,10 @@ export default class FlowerCard extends LitElement {
         this.stateObj = this.config?.entity ? hass.states[this.config.entity] : undefined;
 
         // Check if entity_picture changed and needs resolution
-        const entityPicture = this.stateObj?.attributes.entity_picture;
+        // image_entity (fork option): show a live picture from another entity, e.g. a Planta image.* entity,
+        // instead of the plant's stored picture. Falls back to the plant's own picture if that entity has none.
+        const imageEntity = this.config?.image_entity ? hass.states[this.config.image_entity] : undefined;
+        const entityPicture = imageEntity?.attributes.entity_picture || this.stateObj?.attributes.entity_picture;
         if (entityPicture !== this._lastEntityPicture) {
             this._lastEntityPicture = entityPicture;
             this._resolveEntityPicture(hass, entityPicture);
@@ -114,6 +117,10 @@ export default class FlowerCard extends LitElement {
                     selector: { entity: { domain: "plant" } }
                 },
                 nameSelector(getHaVersion()),
+                {
+                    name: "image_entity",
+                    selector: { entity: { domain: "image" } }
+                },
                 {
                     name: "battery_sensor",
                     selector: { entity: { domain: "sensor", device_class: "battery" } }
