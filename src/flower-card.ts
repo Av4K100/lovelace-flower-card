@@ -66,6 +66,8 @@ export default class FlowerCard extends LitElement {
 
     private stateObj: HomeAssistantEntity | undefined;
     private previousFetchDate = 0;
+    private _fetchedOnce = false;
+    private _lastPlantUpdate: string | undefined;
     private _lastEntityPicture: string | undefined;
     private _resolvedImageUrl: string | undefined;
 
@@ -84,8 +86,17 @@ export default class FlowerCard extends LitElement {
             this._resolveEntityPicture(hass, entityPicture);
         }
 
-        // Only fetch once every second at max. HA is flooded with websocket requests
-        if (Date.now() > this.previousFetchDate + 1000) {
+        // Fork: fetch plant/get_info only when it can matter, so dashboards with many cards
+        // (e.g. 100+ in Bubble Card pop-ups) don't send a websocket call per card every second.
+        // Fetch once at start; afterwards only while the card is visible, and only when the plant
+        // entity has changed or 60 s have passed. Never more than once a second.
+        const lastUpdated = this.stateObj?.last_updated;
+        const changed = lastUpdated !== this._lastPlantUpdate;
+        const visible = this.isConnected && this.getClientRects().length > 0;
+        const due = !this._fetchedOnce || (visible && (changed || Date.now() > this.previousFetchDate + 60000));
+        if (due && Date.now() > this.previousFetchDate + 1000) {
+            this._fetchedOnce = true;
+            this._lastPlantUpdate = lastUpdated;
             this.previousFetchDate = Date.now();
             this.get_data(hass).then(() => {
                 this.requestUpdate();
