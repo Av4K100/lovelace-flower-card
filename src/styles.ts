@@ -164,6 +164,7 @@ export const style = css`
   position: relative;
 }
 .tooltip .tip {
+  display: none;
   opacity: 0;
   visibility: hidden;
   position: absolute;
