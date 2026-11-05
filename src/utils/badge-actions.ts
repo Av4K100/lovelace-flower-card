@@ -31,6 +31,22 @@ export const relativeDaysLabel = (
 };
 
 /**
+ * Label and state for a badge's `next_entity` line: 'next in 3 d', 'due today' or '2 d late'.
+ * Null if the value isn't a date.
+ */
+export const nextDueLabel = (
+    value: unknown,
+    hass?: HassLanguageContext,
+    now: Date = new Date(),
+): { text: string; state: 'upcoming' | 'today' | 'late' } | null => {
+    const days = daysSince(value, now);
+    if (days === null) return null;
+    if (days === 0) return { text: localize(hass, 'badge_due_today'), state: 'today' };
+    if (days > 0) return { text: localize(hass, 'badge_days_late').replace('{days}', String(days)), state: 'late' };
+    return { text: localize(hass, 'badge_next_in').replace('{days}', String(-days)), state: 'upcoming' };
+};
+
+/**
  * Tap handler for an entity badge. With `tap_action` set, the action is handed to
  * Home Assistant's own action handler (the `hass-action` event), so every action
  * type the frontend supports works, including `perform-action` and `confirmation`.

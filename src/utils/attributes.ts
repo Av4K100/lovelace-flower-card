@@ -3,7 +3,7 @@ import { TemplateResult, html } from "lit";
 import { careFields, careIcons, default_show_bars, getCareFields } from "./constants";
 import { getHassLanguage, localize, localizeReading } from "../localize/localize";
 import { entityDisplayName, moreInfo } from "./utils";
-import { handleBadgeTap, relativeDaysLabel } from "./badge-actions";
+import { handleBadgeTap, nextDueLabel, relativeDaysLabel } from "./badge-actions";
 import FlowerCard from "../flower-card";
 
 export interface CareEntry {
@@ -308,14 +308,18 @@ export const renderExtraBadge = (card: FlowerCard, badge: ExtraBadge) => {
         if (rel) displayValue = rel;
     }
 
+    // next_entity: a second line saying when it is next due
+    const nextState = badge.next_entity ? card._hass.states[badge.next_entity]?.state : undefined;
+    const next = nextState ? nextDueLabel(nextState, card._hass) : null;
+
     // Build tooltip text
-    const tooltipText = `${tooltipLabel}: ${displayValue}`;
+    const tooltipText = `${tooltipLabel}: ${displayValue}${next ? ` · ${next.text}` : ''}`;
 
     return html`
-        <div class="extra-badge tooltip" @click="${(e: Event) => { e.stopPropagation(); handleBadgeTap(card, badge, badgeEntity)}}">
+        <div class="extra-badge tooltip${next ? ' two-line' : ''}" @click="${(e: Event) => { e.stopPropagation(); handleBadgeTap(card, badge, badgeEntity)}}">
             <div class="tip" style="text-align:center;">${tooltipText}</div>
             <ha-icon .icon="${icon}" style="color: ${color}"></ha-icon>
-            ${badge.show_state ? html`<span class="badge-text">${displayValue}</span>` : ''}
+            ${badge.show_state || next ? html`<span class="badge-text">${badge.show_state ? html`<span class="badge-line">${displayValue}</span>` : ''}${next ? html`<span class="badge-next ${next.state}">${next.text}</span>` : ''}</span>` : ''}
         </div>
     `;
 }

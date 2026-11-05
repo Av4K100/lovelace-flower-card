@@ -15,6 +15,7 @@ export interface ExtraBadge {
     show_state?: boolean; // Show state value next to icon (default: false)
     format?: 'relative';  // Show a timestamp state/attribute as days, e.g. "6 d ago"
     tap_action?: Record<string, unknown>; // Action on tap (any HA action, e.g. perform-action); default: more-info
+    next_entity?: string; // Second line: when this is next due, from a date/timestamp entity, e.g. 'next in 3 d', 'due today', '2 d late'
 }
 
 /** One part of a name, composed by Home Assistant (HA 2025.11+). */

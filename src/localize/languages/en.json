@@ -33,5 +33,8 @@
   "settings_compact": "Compact",
   "badge_today": "today",
   "badge_days_ago": "{days} d ago",
-  "badge_in_days": "in {days} d"
+  "badge_in_days": "in {days} d",
+  "badge_next_in": "next in {days} d",
+  "badge_due_today": "due today",
+  "badge_days_late": "{days} d late"
 }
