@@ -58,6 +58,12 @@ ha-card > .header:not(.no-image) > #name,
 ha-card > .header:not(.no-image) > #species {
   margin-left: 120px;
 }
+/* overflow: hidden would make the species line avoid the floated badges and drop
+   below them; let it wrap beside them instead. */
+ha-card > .header > #species {
+  overflow: visible;
+  white-space: normal;
+}
 .header-compact {
   padding-top: 4px;
   height: 55px;
