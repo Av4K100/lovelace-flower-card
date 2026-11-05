@@ -334,10 +334,9 @@ export default class FlowerCard extends LitElement {
                         this.openImageDialog();
                     }}">` : ''}
                 <span id="battery">${renderExtraBadges(this)}${renderBattery(this)}</span>
-                <span id="name"> ${displayName} <ha-icon .icon="mdi:${stateObj.state.toLowerCase() == "problem"
-                ? "alert-circle-outline"
-                : ""
-            }"></ha-icon>
+                <span id="name"> ${displayName}${stateObj.state.toLowerCase() == "problem"
+                ? html` <ha-icon .icon="mdi:alert-circle-outline"></ha-icon>`
+                : ''}
                 </span>
                 ${!hideSpecies ? html`<span id="species">${species}</span>` : ''}
             </div>
