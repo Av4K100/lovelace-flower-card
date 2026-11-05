@@ -46,9 +46,9 @@ describe('relativeDaysLabel', () => {
 
 describe('nextDueLabel', () => {
   it('labels upcoming, today and overdue dates', () => {
-    expect(nextDueLabel('2026-11-07', undefined, now)).toEqual({ text: 'next in 3 d', state: 'upcoming' });
-    expect(nextDueLabel('2026-11-04', undefined, now)).toEqual({ text: 'due today', state: 'today' });
-    expect(nextDueLabel('2026-11-02', undefined, now)).toEqual({ text: '2 d late', state: 'late' });
+    expect(nextDueLabel('2026-11-07', undefined, now)).toEqual({ text: 'next in 3 d', short: 'in 3 d', state: 'upcoming' });
+    expect(nextDueLabel('2026-11-04', undefined, now)).toEqual({ text: 'due today', short: 'due today', state: 'today' });
+    expect(nextDueLabel('2026-11-02', undefined, now)).toEqual({ text: '2 d late', short: '2 d late', state: 'late' });
   });
 
   it('returns null for non-dates', () => {

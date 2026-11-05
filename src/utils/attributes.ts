@@ -319,7 +319,9 @@ export const renderExtraBadge = (card: FlowerCard, badge: ExtraBadge) => {
         <div class="extra-badge tooltip${next ? ' two-line' : ''}" @click="${(e: Event) => { e.stopPropagation(); handleBadgeTap(card, badge, badgeEntity)}}">
             <div class="tip" style="text-align:center;">${tooltipText}</div>
             <ha-icon .icon="${icon}" style="color: ${color}"></ha-icon>
-            ${badge.show_state || next ? html`<span class="badge-text">${badge.show_state ? html`<span class="badge-line">${displayValue}</span>` : ''}${next ? html`<span class="badge-next ${next.state}">${next.text}</span>` : ''}</span>` : ''}
+            ${next && badge.next_primary
+                ? html`<span class="badge-text"><span class="badge-line badge-due ${next.state}">${next.short}</span>${badge.show_state ? html`<span class="badge-last">${localize(card._hass, 'badge_last').replace('{value}', displayValue)}</span>` : ''}</span>`
+                : badge.show_state || next ? html`<span class="badge-text">${badge.show_state ? html`<span class="badge-line">${displayValue}</span>` : ''}${next ? html`<span class="badge-next ${next.state}">${next.text}</span>` : ''}</span>` : ''}
         </div>
     `;
 }

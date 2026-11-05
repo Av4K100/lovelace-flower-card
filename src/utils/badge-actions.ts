@@ -38,12 +38,16 @@ export const nextDueLabel = (
     value: unknown,
     hass?: HassLanguageContext,
     now: Date = new Date(),
-): { text: string; state: 'upcoming' | 'today' | 'late' } | null => {
+): { text: string; short: string; state: 'upcoming' | 'today' | 'late' } | null => {
     const days = daysSince(value, now);
     if (days === null) return null;
-    if (days === 0) return { text: localize(hass, 'badge_due_today'), state: 'today' };
-    if (days > 0) return { text: localize(hass, 'badge_days_late').replace('{days}', String(days)), state: 'late' };
-    return { text: localize(hass, 'badge_next_in').replace('{days}', String(-days)), state: 'upcoming' };
+    if (days === 0) { const t = localize(hass, 'badge_due_today'); return { text: t, short: t, state: 'today' }; }
+    if (days > 0) { const t = localize(hass, 'badge_days_late').replace('{days}', String(days)); return { text: t, short: t, state: 'late' }; }
+    return {
+        text: localize(hass, 'badge_next_in').replace('{days}', String(-days)),
+        short: localize(hass, 'badge_in_days').replace('{days}', String(-days)),
+        state: 'upcoming',
+    };
 };
 
 /**

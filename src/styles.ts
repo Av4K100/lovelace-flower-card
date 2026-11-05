@@ -29,11 +29,25 @@ export const style = css`
   align-items: center;
   gap: 4px;
   margin-right: 16px;
-  margin-top: -15px;
+  margin-left: 8px;
+}
+/* Fork: badges come before the name and float right, so a long name wraps onto
+   two lines beside them instead of running underneath. The header grows to fit. */
+.header > #battery {
+  margin-top: 14px;
+}
+.header-compact > #battery {
+  margin-top: 6px;
 }
 .header {
   padding-top: 8px;
-  height: 72px;
+  min-height: 72px;
+  height: auto;
+}
+.header::after {
+  content: "";
+  display: block;
+  clear: both;
 }
 .header-compact {
   padding-top: 4px;
@@ -83,9 +97,10 @@ export const style = css`
 }
 .header > #name {
   font-weight: bold;
-  width: 100%;
   margin-top: 16px;
   display: block;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 .header-compact > #name {
   font-weight: bold;
@@ -217,6 +232,16 @@ export const style = css`
 .extra-badge .badge-next.late {
   color: #EF5350;
   opacity: 1;
+}
+.extra-badge .badge-due.today {
+  color: #FFA726;
+}
+.extra-badge .badge-due.late {
+  color: #EF5350;
+}
+.extra-badge .badge-last {
+  font-size: 0.8em;
+  opacity: 0.7;
 }
 .tooltip:hover .tip, .tooltip:active .tip {
   display: block;

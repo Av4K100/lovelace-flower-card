@@ -36,5 +36,6 @@
   "badge_in_days": "in {days} d",
   "badge_next_in": "next in {days} d",
   "badge_due_today": "due today",
-  "badge_days_late": "{days} d late"
+  "badge_days_late": "{days} d late",
+  "badge_last": "last {value}"
 }
