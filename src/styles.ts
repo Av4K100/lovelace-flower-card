@@ -33,21 +33,30 @@ export const style = css`
 }
 /* Fork: badges come before the name and float right, so a long name wraps onto
    two lines beside them instead of running underneath. The header grows to fit. */
-.header > #battery {
+ha-card > .header > #battery {
   margin-top: 14px;
 }
-.header-compact > #battery {
+ha-card > .header-compact > #battery {
   margin-top: 6px;
 }
 .header {
   padding-top: 8px;
+  height: 72px;
+}
+/* Fork: only the card's own top header grows to fit a two-line name. Bar rows also
+   use the .header class, so these rules are limited to ha-card's direct child. */
+ha-card > .header {
   min-height: 72px;
   height: auto;
 }
-.header::after {
+ha-card > .header::after {
   content: "";
   display: block;
   clear: both;
+}
+ha-card > .header:not(.no-image) > #name,
+ha-card > .header:not(.no-image) > #species {
+  margin-left: 120px;
 }
 .header-compact {
   padding-top: 4px;
@@ -97,8 +106,12 @@ export const style = css`
 }
 .header > #name {
   font-weight: bold;
+  width: 100%;
   margin-top: 16px;
   display: block;
+}
+ha-card > .header > #name {
+  width: auto;
   line-height: 1.25;
   overflow-wrap: anywhere;
 }
