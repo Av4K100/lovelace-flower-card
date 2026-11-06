@@ -40,6 +40,28 @@ extra_badges:
         text: Log a feed for Monstera Albo in Planta?
 ```
 
+## Bar tap actions
+
+By default, tapping a measurement bar opens more-info for its sensor. Two options change that:
+
+- **`bar_tap_action`**: one action (any Home Assistant action) used for every bar.
+- **`bar_tap_actions`**: actions for single bars, keyed by bar name (`moisture`, `temperature`,
+  `humidity`, `soil_temperature`, `vpd`, `illuminance`, `dli`, `conductivity`, `co2`). These win over
+  `bar_tap_action`; bars not listed fall back to `bar_tap_action`, or to more-info if that isn't set.
+
+```yaml
+# Every bar opens a Bubble Card pop-up with the plant's details
+bar_tap_action:
+  action: navigate
+  navigation_path: "#plant-monstera-albo"
+
+# ...or only the soil moisture bar does; the others keep opening more-info
+bar_tap_actions:
+  moisture:
+    action: navigate
+    navigation_path: "#plant-monstera-albo"
+```
+
 ## How the fork stays up to date
 
 - HACS installs **`flower-card-av4k.js`** (set in `hacs.json`), not upstream's `flower-card.js`.

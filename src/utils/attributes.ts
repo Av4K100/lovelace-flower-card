@@ -3,7 +3,7 @@ import { TemplateResult, html } from "lit";
 import { careFields, careIcons, default_show_bars, getCareFields } from "./constants";
 import { getHassLanguage, localize, localizeReading } from "../localize/localize";
 import { entityDisplayName, moreInfo } from "./utils";
-import { handleBadgeTap, nextDueLabel, relativeDaysLabel } from "./badge-actions";
+import { handleBadgeTap, handleBarTap, nextDueLabel, relativeDaysLabel } from "./badge-actions";
 import FlowerCard from "../flower-card";
 
 export interface CareEntry {
@@ -401,7 +401,7 @@ export const renderAttribute = (card: FlowerCard, attr: DisplayedAttribute) => {
     const attributeCssClass = `attribute tooltip ${useFullWidth ? 'width-100' : ''}${useFullWidth && showUnits ? ' has-units' : ''}`;
 
     return html`
-        <div class="${attributeCssClass}" @click="${() => moreInfo(card, attr.sensor)}">
+        <div class="${attributeCssClass}" @click="${() => handleBarTap(card, attr.name, attr.sensor)}">
             <div class="tip" style="text-align:center;">${toolTip}</div>
             <ha-icon .icon="${icon}"></ha-icon>
             <div class="meter red">

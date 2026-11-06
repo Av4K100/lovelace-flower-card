@@ -1,5 +1,5 @@
 import { fireEvent } from "custom-card-helpers";
-import { ExtraBadge } from "../types/flower-card-types";
+import { ExtraBadge, FlowerCardConfig } from "../types/flower-card-types";
 import { HassLanguageContext, localize } from "../localize/localize";
 import FlowerCard from "../flower-card";
 import { moreInfo } from "./utils";
@@ -65,4 +65,23 @@ export const handleBadgeTap = (card: FlowerCard, badge: ExtraBadge, entityId: st
         return;
     }
     moreInfo(card, entityId);
+};
+
+/**
+ * Tap handler for a measurement bar. `bar_tap_actions[<bar name>]` wins, then `bar_tap_action`
+ * (used for every bar); the action goes to Home Assistant's own handler (`hass-action`), so a
+ * `navigate` to a Bubble Card pop-up hash or any other action works. Without either, the bar keeps
+ * the existing behaviour and opens more-info for its sensor.
+ */
+export const handleBarTap = (card: FlowerCard, barName: string, sensorId: string): void => {
+    const config = card.config as FlowerCardConfig | undefined;
+    const action = config?.bar_tap_actions?.[barName] ?? config?.bar_tap_action;
+    if (action) {
+        fireEvent(card, 'hass-action' as never, {
+            config: { entity: sensorId, tap_action: action },
+            action: 'tap',
+        } as never, { bubbles: true, composed: true });
+        return;
+    }
+    moreInfo(card, sensorId);
 };

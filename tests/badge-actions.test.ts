@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { daysSince, relativeDaysLabel, nextDueLabel, handleBadgeTap } from '../src/utils/badge-actions';
+import { daysSince, relativeDaysLabel, nextDueLabel, handleBadgeTap, handleBarTap } from '../src/utils/badge-actions';
 import FlowerCard from '../src/flower-card';
 
 const now = new Date(2026, 10, 4, 21, 0); // 4 Nov 2026, 21:00 local
@@ -74,5 +74,49 @@ describe('handleBadgeTap', () => {
     handleBadgeTap(card, { entity: 'sensor.x' }, 'sensor.x');
     expect(handler).toHaveBeenCalledTimes(1);
     expect((handler.mock.calls[0][0] as CustomEvent).detail).toEqual({ entityId: 'sensor.x' });
+  });
+});
+
+describe('handleBarTap', () => {
+  const makeCard = (config: Record<string, unknown>) => {
+    const card = document.createElement('div') as unknown as FlowerCard;
+    (card as unknown as { config: Record<string, unknown> }).config = config;
+    return card;
+  };
+  const nav = (path: string) => ({ action: 'navigate', navigation_path: path });
+
+  it('uses bar_tap_action for every bar', () => {
+    const card = makeCard({ bar_tap_action: nav('#plant-x') });
+    const seen: CustomEvent[] = [];
+    card.addEventListener('hass-action', (e) => seen.push(e as CustomEvent));
+    handleBarTap(card, 'temperature', 'sensor.x_temperature');
+    expect(seen).toHaveLength(1);
+    expect(seen[0].detail).toEqual({ config: { entity: 'sensor.x_temperature', tap_action: nav('#plant-x') }, action: 'tap' });
+  });
+
+  it('lets bar_tap_actions override a single bar', () => {
+    const card = makeCard({ bar_tap_action: nav('#all'), bar_tap_actions: { moisture: nav('#soil') } });
+    const seen: CustomEvent[] = [];
+    card.addEventListener('hass-action', (e) => seen.push(e as CustomEvent));
+    handleBarTap(card, 'moisture', 'sensor.x_soil_moisture');
+    handleBarTap(card, 'humidity', 'sensor.x_air_humidity');
+    expect(seen.map((e) => (e.detail as { config: { tap_action: unknown } }).config.tap_action)).toEqual([nav('#soil'), nav('#all')]);
+  });
+
+  it('only changes the listed bars when bar_tap_actions is used alone', () => {
+    const card = makeCard({ bar_tap_actions: { moisture: nav('#soil') } });
+    const handler = vi.fn();
+    card.addEventListener('hass-more-info', handler);
+    handleBarTap(card, 'temperature', 'sensor.x_temperature');
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect((handler.mock.calls[0][0] as CustomEvent).detail).toEqual({ entityId: 'sensor.x_temperature' });
+  });
+
+  it('opens more-info when nothing is set', () => {
+    const card = makeCard({});
+    const handler = vi.fn();
+    card.addEventListener('hass-more-info', handler);
+    handleBarTap(card, 'moisture', 'sensor.x_soil_moisture');
+    expect(handler).toHaveBeenCalledTimes(1);
   });
 });
