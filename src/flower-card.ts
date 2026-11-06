@@ -7,7 +7,8 @@ import * as packageJson from '../package.json';
 import { computeCareDialogState, renderAttributes, renderBattery, renderCareInfo, renderCareItems, renderExtraBadges, selectCareInfo } from './utils/attributes';
 import { CARD_NAME, default_show_bars, getCareFields, getPlantAttributes, missingImage } from './utils/constants';
 import { getHassLanguage, localize } from './localize/localize';
-import { entityDisplayName, isMediaSourceUrl, moreInfo, nameSelector, resolveMediaSource, shouldEnableImageLightbox } from './utils/utils';
+import { handleNameTap } from './utils/badge-actions';
+import { entityDisplayName, isMediaSourceUrl, nameSelector, resolveMediaSource, shouldEnableImageLightbox } from './utils/utils';
 
 console.info(
     `%c FLOWER-CARD %c ${packageJson.version}`,
@@ -324,7 +325,7 @@ export default class FlowerCard extends LitElement {
         return html`
             <ha-card class="${haCardCssClass}">
             <div class="${headerCssClass}${noImageClass}" @click="${() =>
-                moreInfo(this, stateObj.entity_id)}">
+                handleNameTap(this, stateObj.entity_id)}">
                 ${!hideImage ? html`<img
                     src="${this._resolvedImageUrl || missingImage}"
                     class="${imageLightbox ? 'has-lightbox' : ''}"

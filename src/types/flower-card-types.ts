@@ -43,6 +43,7 @@ export interface FlowerCardConfig extends LovelaceCardConfig {
     battery_ok_level?: number;     // Above this → green (default: 40)
     bar_tap_action?: Record<string, unknown>;                   // Fork: action when any bar is tapped (any HA action); default: more-info
     bar_tap_actions?: Record<string, Record<string, unknown>>;  // Fork: per-bar actions keyed by bar name (moisture, temperature, ...); win over bar_tap_action
+    name_tap_action?: Record<string, unknown>;                  // Fork: action when the header (plant name / species) is tapped; default: more-info for the plant
 }
 
 export enum DisplayType {

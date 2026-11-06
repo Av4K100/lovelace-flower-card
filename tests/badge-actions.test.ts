@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { daysSince, relativeDaysLabel, nextDueLabel, handleBadgeTap, handleBarTap } from '../src/utils/badge-actions';
+import { daysSince, relativeDaysLabel, nextDueLabel, handleBadgeTap, handleBarTap, handleNameTap } from '../src/utils/badge-actions';
 import FlowerCard from '../src/flower-card';
 
 const now = new Date(2026, 10, 4, 21, 0); // 4 Nov 2026, 21:00 local
@@ -118,5 +118,27 @@ describe('handleBarTap', () => {
     card.addEventListener('hass-more-info', handler);
     handleBarTap(card, 'moisture', 'sensor.x_soil_moisture');
     expect(handler).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('handleNameTap', () => {
+  it('fires hass-action with name_tap_action', () => {
+    const card = document.createElement('div') as unknown as FlowerCard;
+    const tap_action = { action: 'navigate', navigation_path: '#plant-x' };
+    (card as unknown as { config: Record<string, unknown> }).config = { name_tap_action: tap_action };
+    const seen: CustomEvent[] = [];
+    card.addEventListener('hass-action', (e) => seen.push(e as CustomEvent));
+    handleNameTap(card, 'plant.x');
+    expect(seen).toHaveLength(1);
+    expect(seen[0].detail).toEqual({ config: { entity: 'plant.x', tap_action }, action: 'tap' });
+  });
+
+  it('opens more-info for the plant when not set', () => {
+    const card = document.createElement('div') as unknown as FlowerCard;
+    (card as unknown as { config: Record<string, unknown> }).config = {};
+    const handler = vi.fn();
+    card.addEventListener('hass-more-info', handler);
+    handleNameTap(card, 'plant.x');
+    expect((handler.mock.calls[0][0] as CustomEvent).detail).toEqual({ entityId: 'plant.x' });
   });
 });

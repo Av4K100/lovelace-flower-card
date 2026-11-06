@@ -85,3 +85,20 @@ export const handleBarTap = (card: FlowerCard, barName: string, sensorId: string
     }
     moreInfo(card, sensorId);
 };
+
+/**
+ * Tap handler for the card header (plant name and species). With `name_tap_action` set, the action
+ * goes to Home Assistant's own handler (`hass-action`); without it, the header keeps opening
+ * more-info for the plant. The photo's lightbox (when enabled) is not affected.
+ */
+export const handleNameTap = (card: FlowerCard, plantEntityId: string): void => {
+    const action = (card.config as FlowerCardConfig | undefined)?.name_tap_action;
+    if (action) {
+        fireEvent(card, 'hass-action' as never, {
+            config: { entity: plantEntityId, tap_action: action },
+            action: 'tap',
+        } as never, { bubbles: true, composed: true });
+        return;
+    }
+    moreInfo(card, plantEntityId);
+};

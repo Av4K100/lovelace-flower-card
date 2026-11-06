@@ -62,6 +62,18 @@ bar_tap_actions:
     navigation_path: "#plant-monstera-albo"
 ```
 
+## Name tap action
+
+**`name_tap_action`**: what tapping the card header (plant name and species) does, as any Home
+Assistant action. Without it, the header still opens more-info for the plant. The photo's lightbox
+is unchanged.
+
+```yaml
+name_tap_action:
+  action: navigate
+  navigation_path: "#plant-monstera-albo"
+```
+
 ## How the fork stays up to date
 
 - HACS installs **`flower-card-av4k.js`** (set in `hacs.json`), not upstream's `flower-card.js`.
