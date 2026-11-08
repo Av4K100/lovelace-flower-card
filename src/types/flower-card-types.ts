@@ -33,6 +33,7 @@ export interface FlowerCardConfig extends LovelaceCardConfig {
     image_entity?: string;     // Fork: take the picture from this entity (e.g. a Planta image.*), live
     display_type?: DisplayType;
     hide_units?: boolean;      // Hide value/unit next to bars (default: false for full, true for compact)
+    show_limits?: boolean;     // Show min/max values under each bar (default: false)
     bars_per_row?: number;     // Number of bars per row: 1 or 2 (default: 2 for full, 1 for compact)
     name?: CardName;
     hide_species?: boolean;

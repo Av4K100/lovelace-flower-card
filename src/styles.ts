@@ -162,16 +162,35 @@ ha-card > .header > #name {
   margin-right: 5px;
   max-width: 5%
 }
-.meter.green {
+.meter-wrap {
   flex-grow: 10;
   margin-right: 5px;
-  max-width: 40%
+  max-width: 40%;
+  position: relative;
+  display: inline-grid;
 }
-.attribute.tooltip.width-100 .meter.green {
+.attribute.tooltip.width-100 .meter-wrap {
   max-width: 90%;
 }
-.attribute.tooltip.width-100.has-units .meter.green {
+.attribute.tooltip.width-100.has-units .meter-wrap {
   max-width: 70%;
+}
+.attribute.has-limits {
+  padding-bottom: 12px;
+}
+.meter-wrap > .limits {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  /* A short bar is narrower than its two labels; keep them apart. */
+  gap: 0.6em;
+  white-space: nowrap;
+  font-size: 0.7em;
+  line-height: 1.4;
+  color: var(--secondary-text-color);
 }
 .meter > span {
   grid-row: 1;
