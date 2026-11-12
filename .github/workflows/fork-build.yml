@@ -1,9 +1,13 @@
 ---
-name: "Fork build (flower-card-av4k.js)"
+name: "Fork build (flower-card-av4k.js + release)"
 
 # Rebuilds this fork's own bundle, flower-card-av4k.js, from src/ after every push to main,
-# including a "Sync fork" from Olen/lovelace-flower-card. HACS installs this file (see hacs.json),
-# so upstream's flower-card.js is never touched and syncing can't clash on the built file.
+# including a "Sync fork" from Olen/lovelace-flower-card, then publishes it as a GitHub release
+# whose only file is called flower-card.js.
+#
+# Why a release: HACS installs a release's file before looking in the repo, so it never picks up
+# Olen's root flower-card.js (which syncing brings in). The file must be called flower-card.js so the
+# Home Assistant Plant integration (2026.11+) recognises it and stops loading its own bundled copy.
 
 on:
   push:
@@ -41,7 +45,7 @@ jobs:
         run: |
           npx webpack -c webpack.config.js
           cp flower-card.js flower-card-av4k.js
-          gzip -9 -k -f flower-card-av4k.js
+          gzip -9 -n -k -f flower-card-av4k.js
           git checkout -- flower-card.js flower-card.js.gz flower-card.js.LICENSE.txt
 
       - name: Commit if changed
@@ -55,3 +59,22 @@ jobs:
           git add flower-card-av4k.js flower-card-av4k.js.gz
           git commit -m "Rebuild flower-card-av4k.js"
           git push
+
+      - name: Publish release for HACS (flower-card.js)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git pull --ff-only origin main || true
+          sha=$(git rev-parse --short HEAD)
+          ver=$(node -p "require('./package.json').version")
+          tag="v${ver}-av4k-${sha}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "Release $tag already exists"
+            exit 0
+          fi
+          mkdir -p release
+          cp flower-card-av4k.js release/flower-card.js
+          gh release create "$tag" release/flower-card.js \
+            --target "$(git rev-parse HEAD)" \
+            --title "$tag" \
+            --notes "Av4K100 fork build of flower card ${ver} at ${sha}. HACS installs flower-card.js from this release."

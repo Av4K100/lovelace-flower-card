@@ -93,3 +93,15 @@ name_tap_action:
 - **Auto Release**, **Update plant**: upstream's release jobs; disabled here.
 - **HACS Validation**, **Mark Stale Issues**, **Remove Awaiting Feedback Label**: upstream's store
   listing and issue housekeeping; not needed for a personal fork, disabled here.
+
+## Installed file name
+
+HACS installs `flower-card.js` from this fork's latest GitHub release. The "Fork build" workflow
+builds the card from `src/` after every push to main (including the daily sync from Olen) and
+publishes a release whose only file is that build, named `flower-card.js`.
+
+- The name matters: since 2026.11 the Home Assistant Plant integration ships its own copy of the card
+  and only stops loading it when it finds another resource called `flower-card.js`.
+- The release matters: HACS uses a release's file before files in the repo, so it never picks up
+  Olen's own `flower-card.js` at the repo root.
+- `flower-card-av4k.js` is still built in the repo for older installs.
