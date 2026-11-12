@@ -1,9 +1,12 @@
 ---
-name: "Fork build (flower-card-av4k.js)"
+name: "Fork build (dist/flower-card.js)"
 
-# Rebuilds this fork's own bundle, flower-card-av4k.js, from src/ after every push to main,
-# including a "Sync fork" from Olen/lovelace-flower-card. HACS installs this file (see hacs.json),
-# so upstream's flower-card.js is never touched and syncing can't clash on the built file.
+# Rebuilds this fork's own bundle from src/ after every push to main, including a "Sync fork"
+# from Olen/lovelace-flower-card. HACS installs dist/flower-card.js (see hacs.json): HACS looks in
+# dist/ first, and Olen's repo has no dist/, so syncing can't clash on the built file and upstream's
+# root flower-card.js is never touched. The file must be called flower-card.js so the Home Assistant
+# Plant integration (2026.11+) recognises it and stops loading its own bundled copy of the card.
+# flower-card-av4k.js is still built for older installs.
 
 on:
   push:
@@ -42,16 +45,20 @@ jobs:
           npx webpack -c webpack.config.js
           cp flower-card.js flower-card-av4k.js
           gzip -9 -k -f flower-card-av4k.js
+          mkdir -p dist
+          cp flower-card.js dist/flower-card.js
+          gzip -9 -k -f dist/flower-card.js
           git checkout -- flower-card.js flower-card.js.gz flower-card.js.LICENSE.txt
 
       - name: Commit if changed
         run: |
-          if git diff --quiet -- flower-card-av4k.js flower-card-av4k.js.gz; then
+          git add -f dist/flower-card.js dist/flower-card.js.gz
+          if git diff --quiet -- flower-card-av4k.js flower-card-av4k.js.gz && git diff --cached --quiet; then
             echo "Bundle unchanged"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add flower-card-av4k.js flower-card-av4k.js.gz
-          git commit -m "Rebuild flower-card-av4k.js"
+          git commit -m "Rebuild fork bundle (dist/flower-card.js)"
           git push
